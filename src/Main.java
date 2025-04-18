@@ -1,4 +1,6 @@
 import java.time.LocalDateTime;
+import java.util.InputMismatchException;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
@@ -7,6 +9,8 @@ public class Main {
        Scanner scanner = new Scanner(System.in);
        TaskController taskController = new TaskController();
        boolean isEnded = false; //Variable de control para finalizar el programa
+       boolean isCorrect = false;
+       int numOfAction = 0;
        while (!isEnded){
           System.out.println("Seleccione el número de la acción que desea realizar: ");
           System.out.println("1.Crear tarea");
@@ -15,54 +19,72 @@ public class Main {
           System.out.println("4.Eliminar tarea");
           System.out.println("5.Ver lista de tareas");
           System.out.println("6.Finalizar programa");
-          int numOfAction = scanner.nextInt(); //input del usuario del número de opcíon elegida
-          String descriptionTask = " "; //Input del usuario sobre la descripcion de la tarea o su status
-          int id = 0; // Input del usuario del id de la tarea
+          try {
+             while (!isCorrect){
+                 numOfAction = scanner.nextInt(); //input del usuario del número de opcíon elegida
+                if (numOfAction < 1 || numOfAction > 6){
+                   System.out.println("Error, debe introducir un número entre 1 o 6");
+                }
+                else {
+                   isCorrect = true;
+                }
 
-          switch (numOfAction){
-             case 1:
-                System.out.println("Introduzca breve descripción de la tarea: ");
-                while (descriptionTask.isBlank()){
-                   descriptionTask = scanner.nextLine();
-                }
-                taskController.createTask(descriptionTask);
-                break;
-             case 2:
-                System.out.println("Introduzca el id de la tarea que desea actualizar: ");
-                id = scanner.nextInt();
-                System.out.println("Introduzca la nueva descripción: ");
-                while (descriptionTask.isBlank()){
-                   descriptionTask = scanner.nextLine();
-                }
-                taskController.updateTask(descriptionTask,id);
-                break;
-             case 3:
-                System.out.println("Introduzca el id de la tarea que desea actualizar el status: ");
-                id = scanner.nextInt();
-                System.out.println("Introduzca el nuevo status: ");
-                while (descriptionTask.isBlank()){
-                   descriptionTask = scanner.nextLine();
-                }
-                taskController.updateStatus(descriptionTask,id);
-                break;
-             case 4:
-                System.out.println("Introduzca el id de la tarea que desea eliminar: ");
-                id = scanner.nextInt();
-                taskController.deleteTask(id);
-                break;
-             case 5:
-                System.out.println(taskController.getListTask());
-                break;
-             case 6:
-                isEnded = true;
-          }
+             }
+             int id = 0; // Input del usuario del id de la tarea
+             String descriptionTask = " "; //Input del usuario sobre la descripcion de la tarea o su
+             switch (numOfAction){
+                case 1:
+                   System.out.println("Introduzca breve descripción de la tarea: ");
+                   while (descriptionTask.isBlank()){
+                      descriptionTask = scanner.nextLine();
+                   }
+                   taskController.createTask(descriptionTask);
+                   isCorrect = false;
+                   break;
+                case 2:
+                   System.out.println("Introduzca el id de la tarea que desea actualizar: ");
+                   id = scanner.nextInt();
+                   System.out.println("Introduzca la nueva descripción: ");
+                   while (descriptionTask.isBlank()){
+                      descriptionTask = scanner.nextLine();
+                   }
+                   taskController.updateTask(descriptionTask,id);
+                   isCorrect = false;
+                   break;
+                case 3:
+                   System.out.println("Introduzca el id de la tarea que desea actualizar el status: ");
+                   id = scanner.nextInt();
+                   System.out.println("Introduzca el nuevo status: ");
+                   while (descriptionTask.isBlank()){
+                      descriptionTask = scanner.nextLine();
+                   }
+                   taskController.updateStatus(descriptionTask,id);
+                   isCorrect = false;
+                   break;
+                case 4:
+                   System.out.println("Introduzca el id de la tarea que desea eliminar: ");
+                   id = scanner.nextInt();
+                   taskController.deleteTask(id);
+                   isCorrect = false;
+                   break;
+                case 5:
+                   if (taskController.getListTask().isEmpty()){
+                      System.out.println("La lista de tareas está vacía");
+                   }else {
+                      for(Map.Entry<Integer,Task> entry : taskController.getListTask().entrySet()){
+                         System.out.println(entry.getValue());
+                      }
+                   }
+                   isCorrect = false;
+                   break;
+                case 6:
+                   isEnded = true;
+             }
+          }catch (InputMismatchException e){
+             System.out.println("Error, no ha introducido un número");
+             scanner.nextLine();
+             isCorrect = false;
+            }
        }
-
-
-
-
-
-
-
     }
 }

@@ -1,5 +1,6 @@
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.Optional;
 
 public class TaskController {
     HashMap<Integer,Task> listTask = new HashMap<>();
@@ -17,18 +18,25 @@ public class TaskController {
 
     // Modificar tarea
     public void updateTask(String taskNameNew, int idTask){
-        Task taskToUpadte = listTask.get(idTask);
-        Task currentValueTask = listTask.get(idTask);
-        taskToUpadte.setDescription(taskNameNew);
-        taskToUpadte.setUpdateAt(LocalDateTime.now());
-        boolean isUpdated = listTask.replace(idTask, currentValueTask, taskToUpadte);
-        if (isUpdated){
-            System.out.println("tarea actualizada");
+        Optional<Task> taskToUpadte = Optional.ofNullable(listTask.get(idTask));
+        if(taskToUpadte.isPresent()){
+            Task currentValueTask = taskToUpadte.get();
+            Task newValueTask = taskToUpadte.get();
+            newValueTask.setDescription(taskNameNew);
+            newValueTask.setUpdateAt(LocalDateTime.now());
+            boolean isUpdated = listTask.replace(idTask, currentValueTask, newValueTask);
+            if (isUpdated){
+                System.out.println("tarea actualizada");
+            }else {
+                throw new RuntimeException("Error en la actualizacion de la tarea");
+            }
         }else {
-            taskToUpadte.setDescription(currentValueTask.getDescription());
-            taskToUpadte.setUpdateAt(currentValueTask.getUpdateAt());
-            System.out.println("Error en la actualizacion, restableciendo valores");
+            throw new RuntimeException("El id introducido no se corresponde con ninguna de las tareas de la lista");
+
         }
+
+
+
     }
 
     //Modificar status
