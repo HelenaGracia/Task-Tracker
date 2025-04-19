@@ -1,3 +1,7 @@
+import exceptions.TaskAlreadyExistsException;
+import exceptions.TaskNotFoundException;
+import exceptions.TaskNotUpdatedException;
+
 import java.time.LocalDateTime;
 import java.util.InputMismatchException;
 import java.util.Map;
@@ -31,6 +35,7 @@ public class Main {
 
              }
              int id = 0; // Input del usuario del id de la tarea
+             scanner.nextLine();
              String descriptionTask = " "; //Input del usuario sobre la descripcion de la tarea o su
              switch (numOfAction){
                 case 1:
@@ -85,6 +90,10 @@ public class Main {
              scanner.nextLine();
              isCorrect = false;
             }
+          catch (TaskNotFoundException | TaskNotUpdatedException | TaskAlreadyExistsException e){
+             System.out.println(e.getMessage());
+             isCorrect = false;
+          }
        }
     }
 }
